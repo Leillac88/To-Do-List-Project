@@ -92,3 +92,27 @@ app.post('api/todos', async (req, res) => {
     }
 })
 
+app.put('/api/todos/:id', async (req,res) => {
+    try {
+        const todos = await readTodos();
+        const todoIndex = todos.findIndex(t => t.id === parseInt(req.params.id));
+
+        if (todoIndex === -1) {
+            return res.status(404).json({error: "Tarefa não encontrada"})
+        }
+
+        const ( tetxt, completed ) = req.body;
+
+        if (text !== undefined) {
+            if (typeof text !== 'string' || text.trim().length === 0) {
+                return res.status(400).json({error: 'Texto da tarefa não pode estar vazio!'});
+            }
+
+            if (text.trim().length > 200) {
+                return res.status(400).json({error: "O texto da tarefa não pode ultrapassar 200 caracteres."})
+            }
+
+            todos[todoIndex].text = text.trim();
+        }
+    }
+})
