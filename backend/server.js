@@ -136,9 +136,15 @@ app.delete('/api/todos/:id', async (req, res) => {
         const todoIndex = todos.findIndex(t => t.id === parseInt(req.params.id));
 
         if (todoIndex === -1) {
-            return res.status()
+            return res.status(404).json({error: "Tarefa não encontrada"});
         }
-    } catch (error) {
 
+        const deletedTodo = todos.splice(todoIndex, 1)[0];
+        await saveTodos(todos);
+
+        res.json({ message: 'Tarefa deletada com sucesso!', todo: deletedTodo})
+    } catch (error) {
+        console.error('Erro ao deletar todo: ', error);
+        res.status(500).json({error: "Erro interno do servidor!"})
     }
 })
