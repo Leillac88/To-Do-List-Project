@@ -101,7 +101,7 @@ app.put('/api/todos/:id', async (req,res) => {
             return res.status(404).json({error: "Tarefa não encontrada"})
         }
 
-        const ( tetxt, completed ) = req.body;
+        const (text, completed) = req.body;
 
         if (text !== undefined) {
             if (typeof text !== 'string' || text.trim().length === 0) {
@@ -114,5 +114,15 @@ app.put('/api/todos/:id', async (req,res) => {
 
             todos[todoIndex].text = text.trim();
         }
+
+        if (completed !== undefined) {
+            todos[todoIndex].completed = Boolean(completed)
+        }
+
+        todos[todoIndex].updateAT = new Date().toISOString();
+
+        await saveTodos(todos);
+
+        res.json(todos[todoIndex]);
     }
 })
