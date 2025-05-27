@@ -58,3 +58,30 @@ app.get('/api/todos/:id', async (req, res) => {
         res.status(500).json({ error: "Erro interno no servidor" });
     }
 })
+
+app.post('api/todos', async (req, res) => {
+    try {
+        const { text, completed = false } = req.body;
+
+        if (!text || typeof text !== 'string' || text.trim().length ===0) {
+            return res.status(400).json({error: "O texto da tarefa é obrigatório!"})
+        }
+
+        if (text.trim().length > 200) {
+            return res.status(400).json({error: "O texto da tarefa deve ter, no máximo, 200 caracteres!"})
+        }
+
+    } catch (error) {
+
+    }
+})
+
+
+
+
+// hamburger de picanha com bbq
+// bode desfiado com bbq
+// queijo no melaço
+// asinha com molho picante
+// macaxeira frita
+// risoto siciliano com picanha
