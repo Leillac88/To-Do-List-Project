@@ -71,17 +71,24 @@ app.post('api/todos', async (req, res) => {
             return res.status(400).json({error: "O texto da tarefa deve ter, no máximo, 200 caracteres!"})
         }
 
-    } catch (error) {
+        const todos = await readTodos();
 
+        const newTodo = {
+            id: Date.now(),
+            text: text.trim(),
+            completed: Boolean(completed),
+            createdAT: new Date().toISOString(),
+            updateAT: new Date().toISOString(),
+        }
+
+        todos.push(newTodo);
+        await saveTodos(todos);
+
+        res.status(201).json(newTodo);
+
+    } catch (error) {
+        console.error('Erro ao criar todo: ', error);
+        res.status(500).json({error: 'Erro interno no servidor.'});
     }
 })
 
-
-
-
-// hamburger de picanha com bbq
-// bode desfiado com bbq
-// queijo no melaço
-// asinha com molho picante
-// macaxeira frita
-// risoto siciliano com picanha
