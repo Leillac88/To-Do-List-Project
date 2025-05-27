@@ -1,0 +1,23 @@
+# Dependências
+node_modules/
+package-lock.json
+yarn.lock
+
+# Ambiente
+.env
+.env.local
+
+# Logs e cache
+*.log
+.cache/
+
+# IDE/Editor
+.vscode/
+.idea/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Backend temporário
+*.tmp
