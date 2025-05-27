@@ -158,10 +158,11 @@ app.delete('/api/todos', async (req, res) => {
         await saveTodos(remainingTodos);
 
         res.json({
-            message: `${deletedCount} ${deletedCount === 1 ? 'tarefa deletada' : 'tarefas deletadas'} com sucesso`, deletedCount;
+            message: `${deletedCount} ${deletedCount === 1 ? 'tarefa deletada' : 'tarefas deletadas'} com sucesso`, deletedCount
+
         })
     } catch (error) {
         console.error('Erro ao deletar todos concluídos: ', error);
         res.status(500).json({error: "Erro interno do sevidor"});
     }
-})
+});
