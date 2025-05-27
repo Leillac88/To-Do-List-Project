@@ -98,10 +98,10 @@ app.put('/api/todos/:id', async (req,res) => {
         const todoIndex = todos.findIndex(t => t.id === parseInt(req.params.id));
 
         if (todoIndex === -1) {
-            return res.status(404).json({error: "Tarefa não encontrada"})
+            return res.status(404).json({error: "Tarefa não encontrada"});
         }
 
-        const (text, completed) = req.body;
+        const { text, completed } = req.body;
 
         if (text !== undefined) {
             if (typeof text !== 'string' || text.trim().length === 0) {
@@ -124,5 +124,21 @@ app.put('/api/todos/:id', async (req,res) => {
         await saveTodos(todos);
 
         res.json(todos[todoIndex]);
+    } catch (error) {
+        console.error('Erro ao atualizartodo: ', error);
+        res.status(500).json({error: "Erro interno no servidor."});
+    }
+});
+
+app.delete('/api/todos/:id', async (req, res) => {
+    try {
+        const todos = await readTodos();
+        const todoIndex = todos.findIndex(t => t.id === parseInt(req.params.id));
+
+        if (todoIndex === -1) {
+            return res.status()
+        }
+    } catch (error) {
+
     }
 })
