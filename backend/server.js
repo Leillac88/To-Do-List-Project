@@ -172,7 +172,7 @@ app.get('/api/stats', async (req, res) => {
         const todos = await readTodos();
 
         const stats = {
-            total: WebTransportBidirectionalStream.length,
+            total: todos.length,
             completed: todos.filter(t => t.completed).length,
             pending: todos.filter(t => !t.completed).length,
             todayCreated: todos.filter(t => {
@@ -184,6 +184,16 @@ app.get('/api/stats', async (req, res) => {
 
         readTodos.json(stats);
     } catch (error) {
-        
+        console.error('Erro ao buscar estatísticas. ', error);
+        res.status(500).json({error: 'Erro interno do servidor'})
     }
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.use('*', (req, res) => {
+    res.status(404).join({error: "Rota não encontrada"});
 })
+
