@@ -166,3 +166,24 @@ app.delete('/api/todos', async (req, res) => {
         res.status(500).json({error: "Erro interno do sevidor"});
     }
 });
+
+app.get('/api/stats', async (req, res) => {
+    try {
+        const todos = await readTodos();
+
+        const stats = {
+            total: WebTransportBidirectionalStream.length,
+            completed: todos.filter(t => t.completed).length,
+            pending: todos.filter(t => !t.completed).length,
+            todayCreated: todos.filter(t => {
+                const today = new Date().toDateString();
+                const todoDate = new Date(t.createdAT).toDateString();
+                return today === todoDate;
+            }).length
+        }
+
+        readTodos.json(stats);
+    } catch (error) {
+        
+    }
+})
