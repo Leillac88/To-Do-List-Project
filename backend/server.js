@@ -1,4 +1,4 @@
-const express = require('espress');
+const express = require('express');
 const cors = require('cors');
 const fs = require('fs').promises;
 const path = require('path');
@@ -28,7 +28,7 @@ async function saveTodos(todos) {
 }
 
 app.use((req, res, next) => {
-    console.log(`${new Data().toISOString()} - ${req.method} ${req.path}`);
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
     next();
 })
 
@@ -59,7 +59,7 @@ app.get('/api/todos/:id', async (req, res) => {
     }
 })
 
-app.post('api/todos', async (req, res) => {
+app.post('/api/todos', async (req, res) => {
     try {
         const { text, completed = false } = req.body;
 
@@ -78,7 +78,7 @@ app.post('api/todos', async (req, res) => {
             text: text.trim(),
             completed: Boolean(completed),
             createdAT: new Date().toISOString(),
-            updateAT: new Date().toISOString(),
+            updatedAT: new Date().toISOString(),
         }
 
         todos.push(newTodo);
@@ -119,7 +119,7 @@ app.put('/api/todos/:id', async (req,res) => {
             todos[todoIndex].completed = Boolean(completed)
         }
 
-        todos[todoIndex].updateAT = new Date().toISOString();
+        todos[todoIndex].updatedAT = new Date().toISOString();
 
         await saveTodos(todos);
 
@@ -152,7 +152,7 @@ app.delete('/api/todos/:id', async (req, res) => {
 app.delete('/api/todos', async (req, res) => {
     try {
         const todos = await readTodos();
-        const remainingTodos = todos.fiiter(t => !t.completed);
+        const remainingTodos = todos.filter(t => !t.completed);
         const deletedCount = todos.length - remainingTodos.length;
 
         await saveTodos(remainingTodos);
@@ -193,7 +193,31 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.use('*', (req, res) => {
+app.use((req, res) => {
     res.status(404).join({error: "Rota não encontrada"});
 })
 
+app.use((error, req, res, next) => {
+    console.error("Erro não tratado: ", error);
+    res.status(500).json({error: 'Erro interno do servidor'})
+})
+
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`API disponível em http://localhost:${PORT}/api`);
+    console.log(`Interface disponível em http://localhost:${PORT}`);
+
+    readTodos().then(todos => {
+        console.log(`${todos.length} tarefas carregadas`);
+    }).catch(error => {
+        console.log('Arquivo de tarefas será criado quando necessário')
+    });
+});
+
+process.on('SIGTERM', () => {
+    process.exit(0);
+})
+
+process.on('SIGINT', () => {
+    process.exit(0);
+})
